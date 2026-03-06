@@ -215,7 +215,11 @@ app.get('/alchemy', isAuthenticated, (req, res) => {
                 <h3>Keybinds:</h3>  
                 <li class="innerli">[LMB] 'click' - Click to quick drop, drag to move elements. Double click to duplicate an element</li>
                 <li class="innerli">[RMB] 'contextmenu' - Delete element</li>
-
+                <h3>Wordified Logic:</h3>
+                <li class="innerli">Upon start: Initialize game with 4 beginner elements, and establishing all locked elements in the sidebar</li>
+                <li class="innerli">On element drop: Detect if dropped on another element, the sidebar, or the game area. </li>
+                <li class="innerli">If dropped on another element, check if the combination of those 2 elements is valid. If true, create the new element on top of the 2 old ones, and check if the player has unlocked a new element. If they have, add it to the sidebar.</li>
+                <li class="innerli">If dropped on the sidebar from the game area, delete the element. If dropped on the game area, move the element there.</li>
                 </details>` 
     }
     res.render('page', { user: req.session.user, pageName: 'Gamebar', version: 'v0.1.7', data: data });
