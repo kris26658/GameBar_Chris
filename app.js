@@ -208,6 +208,9 @@ app.get('/alchemy', isAuthenticated, (req, res) => {
                 <li class="innerli">Initial release of Alchemy on Gamebar, with 414 elements</li>
                 <div class="changelog-header">v1.0.1 - Small Update - 3/16/2026</div>
                 <li class="innerli">Added 10 new elements</li>
+                <div class="changelog-header">v1.0.2 - Small Update - 3/17/2026</div>
+                <li class="innerli">Added 33 new elements</li>
+                <li class="innerli">Altered 2 element recipes</li>
             </details>`,
         game: 'Alchemy',
         preview: `<img id="previewImg" src="/alchemy/alchemypreview.png" alt="Alchemy Preview" height="500">`,
@@ -242,7 +245,7 @@ app.get('/game_stack', isAuthenticated, (req, res) => {
 });
 
 app.get('/game_alchemy', isAuthenticated, (req, res) => {
-    res.render('games/alchemy/game_alchemy', { user: req.session.user, pageName: 'Alchemy', version: 'v1.0.1' });
+    res.render('games/alchemy/game_alchemy', { user: req.session.user, pageName: 'Alchemy', version: 'v1.0.2' });
 });
 
 app.get('/logout', (req, res) => {
