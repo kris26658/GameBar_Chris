@@ -1,9 +1,24 @@
 let elementsObject = [];
+var totalElements;
+var totalUnlockedElements = 0;
 
 socket.emit('getElements');
 socket.on('elementsData', (elementsData) => {
     elementsObject = elementsData;
+    totalElements = elementsObject.length;
     console.log('retrieved')
+    socket.emit('getUserElements', user);
+});
+
+socket.on('userElementsData', (userElements) => {
+    userElements.forEach(element => {
+        elementsObject.forEach(e => {
+            if (element == e.name) {
+                e.locked = false;
+                totalUnlockedElements++;
+            }
+        });
+    });
 });
 
 function merge(element1, element2) {
@@ -30,5 +45,18 @@ function merge(element1, element2) {
         document.getElementById("sidebarHeader").innerHTML = `Elements (${totalUnlockedElements}/${totalElements})`;
     }
 
+    gameSave();
+
     return unlockedElement;
 }
+
+function gameSave() {
+    let saveArray = [];
+    elementsObject.forEach(e => {
+        if (!e.locked) {
+            saveArray.push(e.name);
+        }
+    });
+
+    socket.emit('updateUserElements', { username: user, elements: saveArray });
+};

@@ -253,6 +253,8 @@ app.get('/alchemy', isAuthenticated, (req, res) => {
                 <li class="innerli">Added 24 new elements</li>
                 <div class="changelog-header">v1.1.1 - Small Update - 3/26/2026</div>
                 <li class="innerli">Added 34 new elements</li>
+                <div class="changelog-header">v1.2.0 - Game Saving - 4/08/2026</div>
+                <li class="innerli">Implemented game saving functionality</li>
             </details>`,
         game: 'Alchemy',
         preview: `<img id="previewImg" src="/alchemy/alchemypreview.png" alt="Alchemy Preview" height="500">`,
@@ -317,7 +319,7 @@ app.get('/game_stack', isAuthenticated, (req, res) => {
 });
 
 app.get('/game_alchemy', isAuthenticated, (req, res) => {
-    res.render('games/alchemy/game_alchemy', { user: req.session.user, gp: req.session.gp, pageName: 'Alchemy', version: 'v1.1.1' });
+    res.render('games/alchemy/game_alchemy', { user: req.session.user, gp: req.session.gp, pageName: 'Alchemy', version: 'v1.2.0' });
 });
 
 app.get('/game_wordle', isAuthenticated, (req, res) => {
@@ -947,13 +949,31 @@ io.on('connection', (socket) => {
 
         socket.emit('elementsData', returnDict);
     });
+
+    socket.on('getUserElements', (username) => {
+        db.get('SELECT alchemyUnlockedElements FROM users WHERE username = ?', [username], (err, row) => {
+            const userElements = JSON.parse(row.alchemyUnlockedElements);
+            socket.emit('userElementsData', userElements);
+        });
+    });
+
+    socket.on('updateUserElements', (data) => {
+        const username = data.username;
+        const elements = data.elements;
+        db.run('UPDATE users SET alchemyUnlockedElements = ? WHERE username = ?', [JSON.stringify(elements), username], (err) => {
+                if (err) {
+                    console.error('Error updating user elements:', err);
+                }
+        });
+    });
+
+    io.on('disconnect', () => {
+        console.log('Disconnected from auth server');
+    });
+
+    // START SERVER
 });
 
-io.on('disconnect', () => {
-    console.log('Disconnected from auth server');
-});
-
-// START SERVER
 server.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
