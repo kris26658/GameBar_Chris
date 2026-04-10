@@ -46,10 +46,6 @@
                 overflow-y: scroll;
             }
 
-            ::-webkit-scrollbar {
-                width: 0px;
-            }
-
             #descField,
             #guideField,
             #middleGround {
@@ -82,6 +78,11 @@
 
             #guideField {
                 float: right;
+                direction: rtl;
+            }
+
+            #innerGuideField {
+                direction: ltr;
             }
 
             .sprites {
@@ -132,10 +133,12 @@
 
         <!-- Guide -->
         <div id="guideField">
-            <h2>Guide</h2>
-            <p><%- data.guide %></p>
-            <br><br><br><br><br><br><br>
-            <%- data.specifics %>
+            <div id="innerGuideField">
+                <h2>Guide</h2>
+                <p><%- data.guide %></p>
+                <br><br><br><br><br><br><br>
+                <%- data.specifics %>
+            </div>
 
 
         </div>
@@ -156,33 +159,21 @@
             button.style.boxShadow = 'none';
         });
 
+
         function play() {
-            socket.emit('playGame', { game: '<%- data.game %>', cost: '<%- cost %>', user: '<%- user %>' });
-        }
+            let isConfirmed = window.confirm('Are you sure you want to play this game? It will cost <%- cost %> game points.');
 
-        socket.on('onetimePaid', () => {
-            alert('You have paid the one-time fee for this game. You can play it as many times as you want!');
-            window.location.href = `/game_${'<%- data.game %>'.toLowerCase()}`;
-        });
-
-        socket.on('insufficientFunds', (cost) => {
-            alert(`This game costs ${cost} game points. You do not have enough game points to play this game.`);
-        });
-
-        socket.on('confirmCost' , (cost) => {
-            if (confirm(`Playing this game will cost you ${cost} game points. Do you want to proceed?`)) {
-                socket.emit('confirmPlay');
+            if (isConfirmed) {
+                socket.emit('playGame', { game: '<%- data.game %>', cost: '<%- cost %>', user: '<%- user %>' });
             }
-        });
+        }
 
         socket.on('relocate', () => {
             window.location.href = `/game_${'<%- data.game %>'.toLowerCase()}`;
         });
 
-
-        //if window is reloaded, emit 'leaveGame' event to server
-        window.addEventListener('unload', (event) => {
-            socket.emit('leaveGame')
+        socket.on('insufficientFunds', () => {
+            alert('You do not have enough game points to play this game.');
         });
     </script>
 
