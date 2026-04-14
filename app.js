@@ -25,7 +25,7 @@ const db = new sqlite3.Database('./db/app.db', (err) => {
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'your_secret_key';
 const AUTH_URL = process.env.AUTH_URL || 'https://formbar.yorktechapps.com';
-const THIS_URL = process.env.THIS_URL || `http://localhost:${PORT}`;
+const THIS_URL = process.env.THIS_URL || `http://172.16.3.234:${PORT}`;
 const API_KEY = process.env.API_KEY || 'your_api_key';
 
 // MIDDLEWARE
@@ -113,13 +113,13 @@ app.get('/', isAuthenticated, (req, res) => {
             console.error(err.message);
         } else {
             req.session.gp = row ? row.gp : 0;
-            res.render('index', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v0.3.6' });
+            res.render('index', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v0.4.0' });
         }
     });
 });
 
 app.get('/changes', isAuthenticated, (req, res) => {
-    res.render('changes', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v0.3.6' });
+    res.render('changes', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v0.4.0' });
 });
 
 app.get('/2048', isAuthenticated, (req, res) => {
@@ -138,7 +138,7 @@ app.get('/2048', isAuthenticated, (req, res) => {
         <li class="innerli">Removed unnecessary game loop</li>
         <div class="changelog-header">v1.0.2 - Minor Change - 3/26/2026</div>
         <li class="innerli">Removed false text</li>
-        </div class="changelog-header">v1.0.3 - Bug Fix - 4/14/2026</div>
+        <div class="changelog-header">v1.0.3 - Bug Fix - 4/14/2026</div>
         <li class="innerli">Fixed game over screen not displaying</li>
         </details>`,
         game: '2048',
@@ -176,7 +176,7 @@ app.get('/2048', isAuthenticated, (req, res) => {
         </li>
         </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 45, pageName: 'Gamebar', version: 'v0.3.6', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 45, pageName: 'Gamebar', version: 'v0.4.0', data: data });
 });
 
 app.get('/snake', isAuthenticated, (req, res) => {
@@ -215,7 +215,7 @@ app.get('/snake', isAuthenticated, (req, res) => {
                 <li class="innerli">If the snake does not collide with itself or the border, and manages to fill the board, the player wins.</li>
                 </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 25, pageName: 'Gamebar', version: 'v0.3.6', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 25, pageName: 'Gamebar', version: 'v0.4.0', data: data });
 }
 );
 
@@ -252,7 +252,7 @@ app.get('/stack', isAuthenticated, (req, res) => {
                 <li class="innerli">If the player clicks when the block is not aligned at all, the game ends and displays a message based on the player's score and perfect counter.</li>
                 </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 30, pageName: 'Gamebar', version: 'v0.3.6', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 30, pageName: 'Gamebar', version: 'v0.4.0', data: data });
 });
 
 app.get('/alchemy', isAuthenticated, (req, res) => {
@@ -294,7 +294,7 @@ app.get('/alchemy', isAuthenticated, (req, res) => {
                 <li class="innerli">If dropped on the sidebar from the game area, delete the element. If dropped on the game area, move the element there.</li>
                 </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 799, pageName: 'Gamebar', version: 'v0.3.6', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 799, pageName: 'Gamebar', version: 'v0.4.0', data: data });
 });
 
 app.get('/wordle', isAuthenticated, (req, res) => {
@@ -326,7 +326,7 @@ app.get('/wordle', isAuthenticated, (req, res) => {
                 </details>
         </details>`
     };
-    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 20, pageName: 'Gamebar', version: 'v0.3.6', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, cost: 20, pageName: 'Gamebar', version: 'v0.4.0', data: data });
 });
 
 app.get('/game_2048', isAuthenticated, (req, res) => {
@@ -1079,6 +1079,7 @@ io.on('connection', (socket) => {
             new Element("The Amazing Digital Circus", "🎪 The Amazing Digital Circus", "media", ["Circus", "Computer"], true),
             new Element("Caine", "🔴 Caine", "media", ["The Amazing Digital Circus", "AI"], true),
             new Element("Bubble", "🫧 Bubble", "media", ["The Amazing Digital Circus", "Air Bubble"], true),
+            new Element("Osama Bin Laden", "👹 Osama Bin Laden", "notableFigures", ["9/11", "Human"]),
         ];
 
         socket.emit('elementsData', returnDict);
