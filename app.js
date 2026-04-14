@@ -485,7 +485,27 @@ io.on('connection', (socket) => {
                     }
                 });
             } else {
-                console.log('something went wrong')
+                db.get('SELECT gp FROM users WHERE username = ?', [user], (err, row) => {
+                    if (err) {
+                        return console.error(err.message);
+                    }
+
+                    if (row.gp < cost) {
+                        socket.emit('insufficientFunds', cost);
+                    } else {
+                        socket.emit('confirmCost', cost);
+
+                        socket.on('confirmPlay', () => {
+                            db.run('UPDATE users SET gp = gp - ? WHERE username = ?', [cost, user], function (err) {
+                                if (err) {
+                                    return console.error(err.message);
+                                }
+                                paid = true;
+                                socket.emit('relocate');
+                            });
+                        });
+                    }
+                });
             }
         });
     });
