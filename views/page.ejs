@@ -139,11 +139,7 @@
                 <br><br><br><br><br><br><br>
                 <%- data.specifics %>
             </div>
-
-
         </div>
-
-
 
     </body>
 
@@ -181,7 +177,6 @@
         socket.on('relocate', () => {
             window.location.href = `/game_${'<%- data.game %>'.toLowerCase()}`;
         });
-
 
         //if window is reloaded, emit 'leaveGame' event to server
         window.addEventListener('unload', (event) => {
