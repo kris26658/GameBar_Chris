@@ -426,9 +426,9 @@ io.on('connection', (socket) => {
         console.log('Play Game Data:', data);
         console.log(`User ${user} is attempting to play ${game} that costs ${cost} GP.`);
 
-        db.get(`SELECT ${game} FROM onetime WHERE user_id = (SELECT id FROM users WHERE username = ?)`, [user], (err, row) => {
+        db.get(`SELECT ${game} FROM onetime WHERE user_id = ?`, [user], (err, row) => {
             if (err) {
-                console.error(`The game ${game} is not in the onetime table, or there was an error retrieving it. Continuing as a normal game.`);
+                console.error(`The game ${game} is not in the onetime table, or there was an error retrieving it.Continuing as a normal game.`);
                 //if the game is not in the onetime table, proceed with normal transaction
                 return db.get('SELECT gp FROM users WHERE username = ?', [user], (err, row) => {
                     if (err) {
@@ -534,7 +534,7 @@ io.on('connection', (socket) => {
         var dictionary = [];
         for (let i = 97; i <= 122; i++) {
             const letter = String.fromCharCode(i);
-            datamuse.request(`words?sp=${letter}????&max=1000`)
+            datamuse.request(`words ? sp = ${letter}????& max=1000`)
                 .then((json) => {
                     let wordleArray = json
                     wordleArray.forEach(wordObject => {
@@ -1100,10 +1100,6 @@ io.on('connection', (socket) => {
                 console.error('Error updating user elements:', err);
             }
         });
-    });
-
-    io.on('disconnect', () => {
-        console.log('Disconnected from auth server');
     });
 
     // START SERVER

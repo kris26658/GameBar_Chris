@@ -1,0 +1,14 @@
+<script>
+    //check if a game is already open in another tab
+    if (sessionStorage.getItem('gameOpen')) {
+        alert('A game is already open in another tab. Please close that tab to play this game.');
+        window.location.href = '/';
+    } else {
+        sessionStorage.setItem('gameOpen', 'true');
+    }
+    
+    //remove storage item if the page is closed or reloaded
+    window.addEventListener('unload', () => {
+        sessionStorage.removeItem('gameOpen');
+    });
+</script>

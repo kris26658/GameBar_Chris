@@ -139,11 +139,7 @@
                 <br><br><br><br><br><br><br>
                 <%- data.specifics %>
             </div>
-
-
         </div>
-
-
 
     </body>
 
@@ -160,7 +156,12 @@
         });
 
         function play() {
-            socket.emit('playGame', { game: '<%- data.game %>', cost: '<%- cost %>', user: '<%- user %>' });
+            if (sessionStorage.getItem('gameOpen') === 'true') {
+                alert('A game is already open in another tab. Please close that tab to play this game.');
+                window.location.href = '/';
+            } else {
+                socket.emit('playGame', { game: '<%- data.game %>', cost: '<%- cost %>', user: '<%- user %>' });
+            }
         }
 
         socket.on('onetimePaid', () => {
@@ -181,7 +182,6 @@
         socket.on('relocate', () => {
             window.location.href = `/game_${'<%- data.game %>'.toLowerCase()}`;
         });
-
 
         //if window is reloaded, emit 'leaveGame' event to server
         window.addEventListener('unload', (event) => {
