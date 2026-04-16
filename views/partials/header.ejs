@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             color: #4d664d;
-            text-shadow: 2px 2px 3px rgb(13, 71, 71);
+            text-shadow: 2px 2px 3px #0d4747;
             font-weight: bold;
             background-color: #0f0f0f;
         }
@@ -21,14 +21,14 @@
             position: relative;
             width: 100%;
             border: 1px solid;
-            box-shadow: 0px 0px 20px rgb(13, 71, 71);
+            box-shadow: 0px 0px 20px #0d4747;
             margin-top: 12px;
             margin-bottom: 20px;
             z-index: -2;
         }
 
         #partials-header-title {
-            text-shadow: 0px 0px 20px rgb(13, 71, 71);
+            text-shadow: 0px 0px 20px #0d4747;
             font-size: 2em;
             position: absolute;
             left: 50%;
@@ -150,6 +150,10 @@
             text-align: center;
         }
 
+        .partials-header-gp-imgs {
+            width: 120px;
+            height: 120px;
+        }
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -194,18 +198,13 @@
     </div>
     <div id="mask"></div>
     <div id="gamePointsWindow">
-        <h3 style="text-align: center;">Game Points Shop</h3>
+        <h2 style="text-align: center;">Game Points Shop</h2>
         <div id="purchaseButtonDiv">
-            <button class="purchaseButtons" onclick="buyPoints(100, 99)">100 Game Points<br>99
-                Digipogs</button>
-            <button class="purchaseButtons" onclick="buyPoints(210, 199)">210 Game Points<br>199
-                Digipogs</button>
-            <button class="purchaseButtons" onclick="buyPoints(385, 349)">385 Game Points<br>349
-                Digipogs</button>
-            <button class="purchaseButtons" onclick="buyPoints(840, 699)">840 Game Points<br>699
-                Digipogs</button>
-            <button class="purchaseButtons" onclick="buyPoints(1300, 999)">1300 Game Points<br>999
-                Digipogs</button>
+            <button class="purchaseButtons" onclick="buyPoints(100, 99)"><img class="partials-header-gp-imgs" src="/index/gp100.png" alt="100 Game Points"></button>
+            <button class="purchaseButtons" onclick="buyPoints(210, 199)"><img class="partials-header-gp-imgs" src="/index/wip.png" alt="210 Game Points"></button>
+            <button class="purchaseButtons" onclick="buyPoints(385, 349)"><img class="partials-header-gp-imgs" src="/index/wip.png" alt="385 Game Points"></button>
+            <button class="purchaseButtons" onclick="buyPoints(840, 699)"><img class="partials-header-gp-imgs" src="/index/wip.png" alt="840 Game Points"></button>
+            <button class="purchaseButtons" onclick="buyPoints(1300, 999)"><img class="partials-header-gp-imgs" src="/index/wip.png" alt="1300 Game Points"></button>
         </div>
 
         <p id="gamePointsDisplay">You have <%- gp %> game points</p>
@@ -315,7 +314,11 @@
         "Mama mia that's a spicy meatball",
         "Also try Geometry Dash!",
         "discord.gg/hNnsavWR67",
-        "Suggest cool changes for a reward!"
+        "Suggest cool changes for a reward!",
+        "HUMANS.",
+        "Pink pen!!!",
+        "Was that the bite of '87?",
+        
     ];
 
     let splashTextElement = document.getElementById('partials-header-splash-text');
@@ -338,7 +341,7 @@
     // GAME POINTS LOGIC
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     function buyPoints(value, pogs) {
-        let pin = parseInt(prompt("To purchase " + value + " Game Points, please enter your PIN and confirm the transaction."), 10);
+        let pin = parseInt(prompt(value + " Game Points costs " + pogs + " digipogs. Please enter your PIN if you want to go through with the transaction."), 10);
         let reward = value;
         console.log(pin);
 
@@ -351,7 +354,7 @@
     }
 
     socket.on('transactionSuccess', () => {
-        alert("Transaction successful! Your Game Points balance has been updated. Refresh the home page to view the change :)");
+        alert("Transaction successful! Your Game Points balance has been updated. Visit/refresh the home page to view the change :)");
     });
 
     function gamePointsShop(state) {

@@ -165,7 +165,6 @@
         }
 
         socket.on('onetimePaid', () => {
-            alert('You have paid the one-time fee for this game. You can play it as many times as you want!');
             window.location.href = `/game_${'<%- data.game %>'.toLowerCase()}`;
         });
 

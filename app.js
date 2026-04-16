@@ -1105,6 +1105,10 @@ io.on('connection', (socket) => {
     // START SERVER
 });
 
+io.on('disconnect', () => {
+    console.log('Disconnected from auth server');
+});
+
 server.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
