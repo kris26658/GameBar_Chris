@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     alchemyUnlockedElements TEXT DEFAULT '["Fire", "Water", "Air", "Earth"]'
 );
 CREATE TABLE IF NOT EXISTS onetime (
-    user_id INTEGER NOT NULL,
+    user VARCHAR(50) UNIQUE NOT NULL,
     alchemy INTEGER DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user) REFERENCES users(username)
 );
