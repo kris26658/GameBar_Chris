@@ -393,8 +393,8 @@ io.on('connection', (socket) => {
     // DIGIPOG TRANSFERS
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     authSocket.on("transferResponse", (response) => {
-        console.log("Transfer Response:", response);
         socketReturn = response.success;
+        responseMessage = response.message;
     });
 
     socket.on('transaction', (pin, amount, reward, user) => {
@@ -429,7 +429,7 @@ io.on('connection', (socket) => {
                 socket.emit("transactionFailure", "An unknown error occurred during the transaction.");
                 console.error('Transaction failed with an unknown error. No GP added.');
             }
-        }, 5000);
+        }, 1000);
     });
 
     socket.on('playGame', (data) => {
