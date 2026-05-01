@@ -229,15 +229,15 @@
     <div id="gamePointsWindow">
         <h2 style="text-align: center;">Game Points Shop</h2>
         <div id="purchaseButtonDiv">
-            <button class="purchaseButtons" onclick="buyPoints(100, 99)"><img class="partials-header-gp-imgs"
+            <button class="purchaseButtons" onclick="buyPoints('100')"><img class="partials-header-gp-imgs"
                     src="/index/gp100.png" alt="100 Game Points"></button>
-            <button class="purchaseButtons" onclick="buyPoints(210, 199)"><img class="partials-header-gp-imgs"
+            <button class="purchaseButtons" onclick="buyPoints('210')"><img class="partials-header-gp-imgs"
                     src="/index/gp210.png" alt="210 Game Points"></button>
-            <button class="purchaseButtons" onclick="buyPoints(385, 349)"><img class="partials-header-gp-imgs"
+            <button class="purchaseButtons" onclick="buyPoints('385')"><img class="partials-header-gp-imgs"
                     src="/index/gp385.png" alt="385 Game Points"></button>
-            <button class="purchaseButtons" onclick="buyPoints(840, 699)"><img class="partials-header-gp-imgs"
+            <button class="purchaseButtons" onclick="buyPoints('840')"><img class="partials-header-gp-imgs"
                     src="/index/gp840.png" alt="840 Game Points"></button>
-            <button class="purchaseButtons" onclick="buyPoints(1300, 999)"><img class="partials-header-gp-imgs"
+            <button class="purchaseButtons" onclick="buyPoints('1300')"><img class="partials-header-gp-imgs"
                     src="/index/gp1300.png" alt="1300 Game Points"></button>
         </div>
 
@@ -245,8 +245,7 @@
             <p id="gamePointsDisplay">You have <%- gp %> game points</p>
             <div id="pinForm" style="display:none;">
                 <p id="transactionPrompt"></p>
-                <input id="gamePointsDisplay-pinInput" type="password" pattern="\d{4}"
-                    placeholder="PIN">
+                <input id="gamePointsDisplay-pinInput" type="password" pattern="\d{4}" placeholder="PIN">
                 <button class="gamePointsDisplay-button" onclick="confirmTransaction()">Confirm</button>
                 <button class="gamePointsDisplay-button" onclick="cancelTransaction()">Cancel</button>
             </div>
@@ -387,6 +386,41 @@
         "I've had the time of my liiiife, and I owe it all to you",
         "Luke, I am your father.",
         "The wheels on the bus go round and round",
+        "Insert easter egg here",
+        "Bird, bird! Kill it! It's evil!",
+        "Oh, hi. So, how are you holding up?",
+        "Because I'm a potato!",
+        "I've been really busy being dead. You know, after you murdered me?",
+        "You might have a very minor case of serious brain damage.",
+        "Would you just jump into that pit for me?",
+        "Oh for God's... they told me if I ever turned this flashlight on, I would DIE.",
+        "Oh, companion cube, my beloved.",
+        "Balls",
+        "KID! I'M BUSY BECOMING [God]. GO PLAY [Minecrap] OR SOMETHING!",
+        "NOW'S YOUR CHANCE TO BE A [[BIG SHOT]]!!",
+        "Miku Miku BEEEEEEEEEEEEAAAAAAAMMMMMMM!",
+        "Ooo eee ooo~",
+        "Popipopipopopipo",
+        "It's a spring onion, not a leak",
+        "SEKAAAAAAIII DE",
+        "Elevator music",
+        "Doo doo do do doo do doo, doo doo do do do, do do doo doo doo - Jeopardy",
+        "Yet there's something deep inside that leaves me teary-eyed,",
+        "A longing for a world left on the other side",
+        "So can we wander for a spell,",
+        "Or live in parallel?",
+        "My love, can you teach me to be real?",
+        "How high are you?",
+        "Hi, how are you?",
+        "Evil Kinevil eat your heart out",
+        "I'm right behind you aren't I?",
+        "All I wanna do is see you turn into a giant woman",
+        "GOOOOOOOOOOOOD Morning York Tech!",
+        "And lets make it a great day.",
+        "At this time, please rise, and join your teachers in a pledge to the flag",
+        "You should through a FFFFFRREAKING beach party!",
+        "Beep beep I'm a sheep",
+        "Syntax Error",
     ];
 
     let splashTextElement = document.getElementById('partials-header-splash-text');
@@ -408,17 +442,25 @@
     let user = JSON.parse('<%- JSON.stringify(user) %>');
     // GAME POINTS LOGIC
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    function buyPoints(value, pogs) {
-        const pinForm = document.getElementById("pinForm")
-        const transactionPrompt = document.getElementById("transactionPrompt");
-        const pinInput = document.getElementById("gamePointsDisplay-pinInput");
+    function buyPoints(button) {
+        let value = button;
+        let pogs;
 
-        //toggle pin form
-        pinForm.style.display = 'block';
-        transactionPrompt.innerText = value + " Game Points costs " + pogs + " digipogs. Please enter your PIN to confirm the transaction:";
-        pinInput.value = '';
-        pinInput.focus();
-    }
+        socket.emit('getPurchaseVal', button);
+        socket.on('purchaseValReturn', (returnPogs) => {
+            pogs = returnPogs
+
+            const pinForm = document.getElementById("pinForm")
+            const transactionPrompt = document.getElementById("transactionPrompt");
+            const pinInput = document.getElementById("gamePointsDisplay-pinInput");
+
+            //toggle pin form
+            pinForm.style.display = 'block';
+            transactionPrompt.innerText = value + " Game Points costs " + pogs + " digipogs. Please enter your PIN to confirm the transaction:";
+            pinInput.value = '';
+            pinInput.focus();
+        });
+    };
 
     function confirmTransaction() {
         const pinForm = document.getElementById("pinForm")

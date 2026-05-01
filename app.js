@@ -113,13 +113,13 @@ app.get('/', isAuthenticated, (req, res) => {
             console.error(err.message);
         } else {
             req.session.gp = row ? row.gp : 0;
-            res.render('index', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2' });
+            res.render('index', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3' });
         }
     });
 });
 
 app.get('/changes', isAuthenticated, (req, res) => {
-    res.render('changes', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2' });
+    res.render('changes', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3' });
 });
 
 app.get('/2048', isAuthenticated, (req, res) => {
@@ -175,7 +175,7 @@ app.get('/2048', isAuthenticated, (req, res) => {
         </li>
         </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3', data: data });
 });
 
 app.get('/snake', isAuthenticated, (req, res) => {
@@ -214,7 +214,7 @@ app.get('/snake', isAuthenticated, (req, res) => {
                 <li class="innerli">If the snake does not collide with itself or the border, and manages to fill the board, the player wins.</li>
                 </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3', data: data });
 }
 );
 
@@ -251,12 +251,12 @@ app.get('/stack', isAuthenticated, (req, res) => {
                 <li class="innerli">If the player clicks when the block is not aligned at all, the game ends and displays a message based on the player's score and perfect counter.</li>
                 </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3', data: data });
 });
 
 app.get('/alchemy', isAuthenticated, (req, res) => {
     const data = {
-        description: `Based on the popular online game, this singleplayer game challenges player's problem solving and thinking skills (sort of), by challenging them to create new elements from 4 beginner ones. <br><br> This project is the fourth completed Gamebar game, and my personal favorite - Chris`,
+        description: `Based on the popular online game, this singleplayer game challenges player's problem solving and thinking skills (sort of), by challenging them to create new elements from 4 beginner ones. <br><br> This project is the fourth completed Gamebar game, and my personal favorite - Chris<br><br>YOU ONLY NEED TO BUY THIS ONCE TO PLAY IT FOREVER. IF THIS DOESNT WORK, LET CHRIS KNOW`,
         developer: 'Christian Martin',
         changelog: `<details>
                 <summary class="summaries">Changelog</summary>
@@ -296,7 +296,7 @@ app.get('/alchemy', isAuthenticated, (req, res) => {
                 <li class="innerli">If dropped on the sidebar from the game area, delete the element. If dropped on the game area, move the element there.</li>
                 </details>`
     }
-    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3', data: data });
 });
 
 app.get('/wordle', isAuthenticated, (req, res) => {
@@ -331,7 +331,7 @@ app.get('/wordle', isAuthenticated, (req, res) => {
                 </details>
         </details>`
     };
-    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.2', data: data });
+    res.render('page', { user: req.session.user, gp: req.session.gp, pageName: 'Gamebar', version: 'v1.0.3', data: data });
 });
 
 app.get('/game_2048', isAuthenticated, (req, res) => {
@@ -391,6 +391,14 @@ var responseMessage = '';
 io.on('connection', (socket) => {
     // DIGIPOG TRANSFERS
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    const gpPurchaseValues = {
+        '100': 99,
+        '210': 199,
+        '385': 349,
+        '840': 699,
+        '1300': 999
+    };
+
     authSocket.on("transferResponse", (response) => {
         socketReturn = response.success;
         responseMessage = response.message;
@@ -409,7 +417,13 @@ io.on('connection', (socket) => {
         const gamePoints = reward;
         const username = user;
 
-        authSocket.emit('transferDigipogs', data);
+        if (gpPurchaseValues[reward] == amount) {
+            authSocket.emit('transferDigipogs', data);
+        } else {
+            socket.emit("transactionFailure", "Filthy cheater.");
+            console.error(`Transaction failed due to invalid amount. Expected ${gpPurchaseValues[reward]}, but got ${amount}. No GP added.`);
+            return;
+        }
 
         setTimeout(() => {
             console.log(`Transaction result for user ${username}:`, socketReturn, responseMessage);
@@ -431,6 +445,9 @@ io.on('connection', (socket) => {
         }, 1000);
     });
 
+    socket.on('getPurchaseVal', (button) => {
+        socket.emit('purchaseValReturn', gpPurchaseValues[button]);
+    });
     socket.on('playGame', (data) => {
         prices = {
             '2048': 45,
@@ -441,37 +458,38 @@ io.on('connection', (socket) => {
         };
 
         let user = data.user;
-        let cost = prices[data.game];
-        let game = data.game.toLowerCase().replace(/\s/g, '_'); // Convert game name to lowercase and replace spaces with underscores for database compatibility
-        console.log('Play Game Data:', data);
-        console.log(`User ${user} is attempting to play ${game} that costs ${cost} GP.`);
+        if (prices[data.game]) {
+            let cost = prices[data.game];
+            let game = data.game.toLowerCase().replace(/\s/g, '_');
+            console.log('Play Game Data:', data);
+            console.log(`User ${user} is attempting to play ${game} that costs ${cost} GP.`);
 
-        db.get(`SELECT ${game} FROM onetime WHERE user = ?`, [user], (err, row) => {
-            if (err) {
-                console.error(`The game ${game} is not in the onetime table, or there was an error retrieving it.Continuing as a normal game.`);
-                //if the game is not in the onetime table, proceed with normal transaction
-                return db.get('SELECT gp FROM users WHERE username = ?', [user], (err, row) => {
-                    if (err) {
-                        return console.error(err.message);
-                    }
+            db.get(`SELECT ${game} FROM onetime WHERE user = ?`, [user], (err, row) => {
+                if (err) {
+                    console.error(`The game ${game} is not in the onetime table, or there was an error retrieving it.Continuing as a normal game.`);
+                    //if the game is not in the onetime table, proceed with normal transaction
+                    return db.get('SELECT gp FROM users WHERE username = ?', [user], (err, row) => {
+                        if (err) {
+                            return console.error(err.message);
+                        }
 
-                    if (row.gp < cost) {
-                        socket.emit('insufficientFunds', cost);
-                    } else {
-                        socket.emit('confirmCost', cost);
+                        if (row.gp < cost) {
+                            socket.emit('insufficientFunds', cost);
+                        } else {
+                            socket.emit('confirmCost', cost);
 
-                        socket.on('confirmPlay', () => {
-                            db.run('UPDATE users SET gp = gp - ? WHERE username = ?', [cost, user], function (err) {
-                                if (err) {
-                                    return console.error(err.message);
-                                }
-                                paid = true;
-                                socket.emit('relocate');
+                            socket.on('confirmPlay', () => {
+                                db.run('UPDATE users SET gp = gp - ? WHERE username = ?', [cost, user], function (err) {
+                                    if (err) {
+                                        return console.error(err.message);
+                                    }
+                                    paid = true;
+                                    socket.emit('relocate', game);
+                                });
                             });
-                        });
-                    }
-                });
-            }
+                        }
+                    });
+                }
 
             //if the game is in the onetime table, check if the user has already paid for it
             console.log(`Retrieved onetime purchase data for user ${user} and game ${game}:`, row);
@@ -488,11 +506,11 @@ io.on('connection', (socket) => {
                         return console.error(err.message);
                     }
 
-                    if (row.gp < cost) {
-                        socket.emit('insufficientFunds');
-                    } else {
-                        //deduct GP and update the onetime table if necessary
-                        socket.emit('confirmCost', cost);
+                        if (row.gp < cost) {
+                            socket.emit('insufficientFunds', cost);
+                        } else {
+                            //deduct GP and update the onetime table if necessary
+                            socket.emit('confirmCost', cost);
 
                         socket.on('confirmPlay', () => {
                             db.run('UPDATE users SET gp = gp - ? WHERE username = ?', [cost, user], function (err) {
@@ -510,38 +528,41 @@ io.on('connection', (socket) => {
                                     console.log(`Set user ${user} as having paid for onetime game ${game}.`);
                                 });
 
-                                //allow relocate to function properly
-                                paid = true;
-                                socket.emit('relocate');
+                                    //allow relocate to function properly
+                                    paid = true;
+                                    socket.emit('relocate', game);
+                                });
                             });
-                        });
-                    }
-                });
-            } else {
-                db.get('SELECT gp FROM users WHERE username = ?', [user], (err, row) => {
-                    console.log(`User ${user} is attempting to play a game that is not onetime, proceeding with normal transaction flow.`);
-                    if (err) {
-                        return console.error(err.message);
-                    }
+                        }
+                    });
+                } else {
+                    db.get('SELECT gp FROM users WHERE username = ?', [user], (err, row) => {
+                        console.log(`User ${user} is attempting to play a game that is not onetime, proceeding with normal transaction flow.`);
+                        if (err) {
+                            return console.error(err.message);
+                        }
 
-                    if (row.gp < cost) {
-                        socket.emit('insufficientFunds', cost);
-                    } else {
-                        socket.emit('confirmCost', cost);
+                        if (row.gp < cost) {
+                            socket.emit('insufficientFunds', cost);
+                        } else {
+                            socket.emit('confirmCost', cost);
 
-                        socket.on('confirmPlay', () => {
-                            db.run('UPDATE users SET gp = gp - ? WHERE username = ?', [cost, user], function (err) {
-                                if (err) {
-                                    return console.error(err.message);
-                                }
-                                paid = true;
-                                socket.emit('relocate');
+                            socket.on('confirmPlay', () => {
+                                db.run('UPDATE users SET gp = gp - ? WHERE username = ?', [cost, user], function (err) {
+                                    if (err) {
+                                        return console.error(err.message);
+                                    }
+                                    paid = true;
+                                    socket.emit('relocate');
+                                });
                             });
-                        });
-                    }
-                });
-            }
-        });
+                        }
+                    });
+                }
+            });
+        } else {
+            console.error(`Price for game ${data.game} not found.`);
+        }
     });
 
     //on unload, set paid back to false, preventing users from just refreshing the page to play games for free
