@@ -143,7 +143,6 @@ app.get('/2048', isAuthenticated, (req, res) => {
         </details>`,
         game: '2048',
         preview: `<img id="previewImg" src="/2048/2048preview.png" alt="2048 preview" height="500">`,
-        playButton: `<button id="button" onclick="play()"">Play</button>`,
         playButton: `<button id="button" onclick="play()">Play</button>`,
         guide: `Use the arrow keys to move the tiles. When two tiles with the same number touch, they merge into a
         greater one! The goal is to create a tile with the number 2048. Be careful, though: if the board fills
@@ -196,7 +195,7 @@ app.get('/snake', isAuthenticated, (req, res) => {
         </details>`,
         game: 'Snake',
         preview: `<img id="previewImg" src="/snake/snakepreview.png" alt="Snake Preview" height="500">`,
-        playButton: `<button id="button" onclick="play()"">Play</button>`,
+        playButton: `<button id="button" onclick="play()">Play</button>`,
         guide: `Use the arrow keys to move the snake in the desired direction. Eat the red apples to grow longer, but be careful not to run into your own tail or the walls!`,
         specifics: ` <details>
         <summary class="summaries">Specifics</summary>
@@ -235,7 +234,7 @@ app.get('/stack', isAuthenticated, (req, res) => {
             </details>`,
         game: 'Stack',
         preview: `<img id="previewImg" src="/stack/stackpreview.png" alt="Stack Preview" height="500">`,
-        playButton: `<button id="button" onclick="play()"">Play</button>`,
+        playButton: `<button id="button" onclick="play()">Play</button>`,
         guide: `Select your difficulty and press the spacebar to drop the moving block as evenly onto the stack as possible. The more unevenly you drop it, the smaller the next block will be, making it harder to stack. If you miss the stack entirely, it's game over! Try to stack as high as possible!`,
         specifics: ` <details>
             <summary class="summaries">Specifics</summary>
