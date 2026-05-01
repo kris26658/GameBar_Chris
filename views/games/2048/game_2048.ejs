@@ -137,16 +137,13 @@
             }
         }
         function gameCheck() {
-            console.log("fuck y9uo7")
             if (gameWin) {
                 ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 48px Arial";
                 ctx.fillText("You Win!", 180, 300);
-                console.log('Game Won');
             } else if (gameOver) {
-                console.log('Gamedsdfgsdfgsdfgsdfgdfsgfgf Over');
                 ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#ffffff";
@@ -158,7 +155,6 @@
         window.onload = function () {
             // Spawns a square on start
             spawn();
-            console.log('Game started');
         };
         // Detects if a key is being pressed
         window.addEventListener('keydown', function (event) {
@@ -250,7 +246,6 @@
                 }
             }
             if (!canMove) {
-                console.log('Game Over');
                 gameOver = true;
                 gameCheck();
                 return;

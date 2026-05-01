@@ -178,8 +178,8 @@
             }
         });
 
-        socket.on('relocate', () => {
-            window.location.href = `/game_${'<%- data.game %>'.toLowerCase()}`;
+        socket.on('relocate', (game) => {
+            window.location.href = `/game_${game.toLowerCase()}`;
         });
 
         //if window is reloaded, emit 'leaveGame' event to server
